@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Xuanhao Pan</title>
+  <desc id="desc">A geometric XP monogram with a route motif.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef3f7"/>
+      <stop offset="1" stop-color="#dce7ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="40" fill="url(#bg)"/>
+  <path d="M88 358 C156 236 214 314 282 188 S392 122 430 104" fill="none" stroke="#386a91" stroke-width="9" stroke-linecap="round" opacity=".72"/>
+  <g fill="#fbfcfe" stroke="#386a91" stroke-width="8">
+    <circle cx="88" cy="358" r="16"/>
+    <circle cx="282" cy="188" r="16"/>
+    <circle cx="430" cy="104" r="16"/>
+  </g>
+  <text x="256" y="307" text-anchor="middle" fill="#172033" font-family="Arial, sans-serif" font-size="142" font-weight="650" letter-spacing="-10">XP</text>
+</svg>

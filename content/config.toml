@@ -1,0 +1,50 @@
+[site]
+title = "Xuanhao Pan"
+description = "Xuanhao Pan is a Ph.D. candidate at CUHK-Shenzhen working on learning-guided optimization, search, and neural combinatorial optimization."
+favicon = "/favicon.svg"
+last_updated = "August 2026"
+
+[author]
+name = "Xuanhao Pan"
+title = "Ph.D. Candidate in Computer Science"
+institution = "The Chinese University of Hong Kong, Shenzhen"
+avatar = "/profile.svg"
+
+[social]
+email = "xuanhaopan@link.cuhk.edu.cn"
+google_scholar = "https://scholar.google.com/citations?user=phmvvzsAAAAJ"
+github = "https://github.com/neo-pan"
+
+[features]
+enable_likes = false
+enable_one_page_mode = false
+
+[i18n]
+enabled = false
+locales = ["en"]
+default_locale = "en"
+mode = "fixed"
+fixed_locale = "en"
+persist = false
+switcher = false
+
+[i18n.labels]
+en = "English"
+
+[[navigation]]
+title = "About"
+type = "page"
+target = "about"
+href = "/"
+
+[[navigation]]
+title = "Publications"
+type = "page"
+target = "publications"
+href = "/publications"
+
+[[navigation]]
+title = "CV"
+type = "page"
+target = "cv"
+href = "/cv"

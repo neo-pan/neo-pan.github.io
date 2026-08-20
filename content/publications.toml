@@ -1,0 +1,4 @@
+type = "publication"
+title = "Publications"
+description = "Selected peer-reviewed research on learning-guided optimization, search, and machine learning."
+source = "publications.bib"

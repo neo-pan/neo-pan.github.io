@@ -1,0 +1,4 @@
+type = "text"
+title = "CV"
+description = "Education, research experience, and technical background."
+source = "cv.md"
