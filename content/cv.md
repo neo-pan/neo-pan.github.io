@@ -4,13 +4,13 @@
 
 Ph.D. in Computer Science, September 2022 – Present
 
-Advisor: [Tianshu Yu](https://mypage.cuhk.edu.cn/academics/yutianshu/)
+Supervisor: [Tianshu Yu](https://mypage.cuhk.edu.cn/academics/yutianshu/)
 
 **Huazhong University of Science and Technology**
 
 M.Eng. in Computer Science, September 2019 – May 2022
 
-Advisor: [Yan Jin](https://scholar.google.com/citations?user=joz7edsAAAAJ)
+Supervisor: [Yan Jin](https://scholar.google.com/citations?user=joz7edsAAAAJ)
 
 Thesis: *Hierarchical based Deep Reinforcement Learning for Solving the Travelling Salesman Problem*
 
