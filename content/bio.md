@@ -1,4 +1,4 @@
-I am a Ph.D. candidate in Computer Science at the School of Data Science, The Chinese University of Hong Kong, Shenzhen.
+I am a Ph.D. candidate in Computer Science at the School of Data Science, The Chinese University of Hong Kong, Shenzhen, advised by [Tianshu Yu](https://mypage.cuhk.edu.cn/academics/yutianshu/).
 
 My research focuses on **learning-guided optimization and search**, with an emphasis on neural solvers for routing problems, reinforcement learning, and Monte Carlo tree search. I also study how language models can support algorithm and kernel optimization through structured search and feedback.
 

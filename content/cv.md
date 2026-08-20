@@ -4,9 +4,13 @@
 
 Ph.D. in Computer Science, September 2022 – Present
 
+Advisor: [Tianshu Yu](https://mypage.cuhk.edu.cn/academics/yutianshu/)
+
 **Huazhong University of Science and Technology**
 
 M.Eng. in Computer Science, September 2019 – May 2022
+
+Advisor: [Yan Jin](https://scholar.google.com/citations?user=joz7edsAAAAJ)
 
 Thesis: *Hierarchical based Deep Reinforcement Learning for Solving the Travelling Salesman Problem*
 
@@ -29,6 +33,8 @@ September 2022 – Present
 **Research Intern**, Microsoft Research Asia
 
 October 2021 – May 2022
+
+Mentor: [Lei Song](https://scholar.google.com/citations?user=pXDSOocAAAAJ)
 
 - Worked on scalable neural solvers for large-scale traveling salesman problems.
 - Contributed to H-TSP and Pointerformer, published at AAAI 2023.
