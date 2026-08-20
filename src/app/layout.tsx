@@ -3,10 +3,13 @@ import './globals.css';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import { MotionProvider } from '@/components/ui/MotionProvider';
 import { LocaleProvider } from '@/components/ui/LocaleProvider';
 import { getConfig } from '@/lib/config';
 import { getRuntimeI18nConfig } from '@/lib/i18n/config';
 import type { SiteConfig } from '@/lib/config';
+
+const SITE_URL = 'https://neo-pan.github.io';
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = getConfig();
@@ -14,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const openGraphLocale = runtimeI18n.defaultLocale === 'zh' ? 'zh_CN' : 'en_US';
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
       default: config.site.title,
       template: `%s | ${config.site.title}`,
@@ -23,15 +27,33 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: config.author.name }],
     creator: config.author.name,
     publisher: config.author.name,
+    alternates: {
+      canonical: '/',
+    },
     icons: {
       icon: config.site.favicon,
     },
     openGraph: {
       type: 'website',
+      url: '/',
       locale: openGraphLocale,
       title: config.site.title,
       description: config.site.description,
       siteName: `${config.author.name}'s Academic Website`,
+      images: [
+        {
+          url: config.author.avatar,
+          width: 512,
+          height: 512,
+          alt: `Research mark for ${config.author.name}`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary',
+      title: config.site.title,
+      description: config.site.description,
+      images: [config.author.avatar],
     },
   };
 }
@@ -121,6 +143,31 @@ export default function RootLayout({
   const config = getConfig();
   const runtimeI18n = getRuntimeI18nConfig(config.i18n);
   const targetLocales = runtimeI18n.enabled ? runtimeI18n.locales : [runtimeI18n.defaultLocale];
+  const sameAs = [
+    config.social.google_scholar,
+    config.social.github,
+    config.social.orcid,
+    config.social.linkedin,
+  ].filter((url): url is string => Boolean(url));
+  const personJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: config.author.name,
+    url: SITE_URL,
+    image: `${SITE_URL}${config.author.avatar}`,
+    jobTitle: config.author.title,
+    affiliation: {
+      '@type': 'CollegeOrUniversity',
+      name: config.author.institution,
+    },
+    sameAs,
+    knowsAbout: [
+      'Learning-guided optimization',
+      'Neural combinatorial optimization',
+      'Monte Carlo tree search',
+      'LLM-assisted algorithm search',
+    ],
+  };
 
   const {
     navigationByLocale,
@@ -132,6 +179,10 @@ export default function RootLayout({
     <html lang={runtimeI18n.defaultLocale} className="scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="icon" href={config.site.favicon} type="image/svg+xml" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, '\\u003c') }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -159,25 +210,34 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
+        <a
+          href="#main-content"
+          className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-md bg-primary px-4 py-2 text-sm font-medium text-background shadow-lg transition-transform focus:translate-y-0"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider>
-          <LocaleProvider config={runtimeI18n}>
-            <Navigation
-              items={config.navigation}
-              siteTitle={config.site.title}
-              enableOnePageMode={config.features.enable_one_page_mode}
-              i18n={runtimeI18n}
-              itemsByLocale={navigationByLocale}
-              siteTitleByLocale={siteTitleByLocale}
-            />
-            <main className="min-h-screen pt-16 lg:pt-20">
-              {children}
-            </main>
-            <Footer
-              lastUpdated={config.site.last_updated}
-              lastUpdatedByLocale={lastUpdatedByLocale}
-              defaultLocale={runtimeI18n.defaultLocale}
-            />
-          </LocaleProvider>
+          <MotionProvider>
+            <LocaleProvider config={runtimeI18n}>
+              <Navigation
+                items={config.navigation}
+                siteTitle={config.site.title}
+                enableOnePageMode={config.features.enable_one_page_mode}
+                i18n={runtimeI18n}
+                itemsByLocale={navigationByLocale}
+                siteTitleByLocale={siteTitleByLocale}
+              />
+              <main id="main-content" tabIndex={-1} className="min-h-screen pt-16 lg:pt-20 outline-none">
+                {children}
+              </main>
+              <Footer
+                siteTitle={config.site.title}
+                lastUpdated={config.site.last_updated}
+                lastUpdatedByLocale={lastUpdatedByLocale}
+                defaultLocale={runtimeI18n.defaultLocale}
+              />
+            </LocaleProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

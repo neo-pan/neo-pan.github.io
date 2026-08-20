@@ -4,12 +4,13 @@ import { useLocaleStore } from '@/lib/stores/localeStore';
 import { useMessages } from '@/lib/i18n/useMessages';
 
 interface FooterProps {
+  siteTitle: string;
   lastUpdated?: string;
   lastUpdatedByLocale?: Record<string, string | undefined>;
   defaultLocale?: string;
 }
 
-export default function Footer({ lastUpdated, lastUpdatedByLocale, defaultLocale = 'en' }: FooterProps) {
+export default function Footer({ siteTitle, lastUpdated, lastUpdatedByLocale, defaultLocale = 'en' }: FooterProps) {
   const locale = useLocaleStore((state) => state.locale);
   const messages = useMessages();
 
@@ -26,11 +27,8 @@ export default function Footer({ lastUpdated, lastUpdatedByLocale, defaultLocale
           <p className="text-xs text-neutral-500">
             {messages.footer.lastUpdated}: {resolvedLastUpdated}
           </p>
-          <p className="text-xs text-neutral-500 flex items-center">
-            <a href="https://github.com/xyjoey/PRISM" target="_blank" rel="noopener noreferrer">
-              {messages.footer.builtWithPrism}
-            </a>
-            <span className="ml-2">🚀</span>
+          <p className="text-xs text-neutral-500">
+            © {new Date().getFullYear()} {siteTitle}
           </p>
         </div>
       </div>

@@ -144,6 +144,7 @@ export default function Profile({ author, social, features, researchInterests }:
                         return (
                             <div key={link.name} className="relative">
                                 <button
+                                    type="button"
                                     onMouseEnter={() => {
                                         if (!isAddressPinned) setShowAddress(true);
                                         setLastClickedTooltip('address');
@@ -159,6 +160,8 @@ export default function Profile({ author, social, features, researchInterests }:
                                         : 'text-neutral-600 dark:text-neutral-400 hover:text-accent'
                                         }`}
                                     aria-label={link.name}
+                                    aria-expanded={isAddressPinned}
+                                    aria-controls="location-contact-panel"
                                 >
                                     {isAddressPinned ? (
                                         <MapPinSolidIcon className="h-5 w-5" />
@@ -171,6 +174,7 @@ export default function Profile({ author, social, features, researchInterests }:
                                 <AnimatePresence>
                                     {(showAddress || isAddressPinned) && (
                                         <motion.div
+                                            id="location-contact-panel"
                                             initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                             animate={{ opacity: 1, y: -10, scale: 1 }}
                                             exit={{ opacity: 0, y: -20, scale: 0.8 }}
@@ -221,6 +225,7 @@ export default function Profile({ author, social, features, researchInterests }:
                         return (
                             <div key={link.name} className="relative">
                                 <button
+                                    type="button"
                                     onMouseEnter={() => {
                                         if (!isEmailPinned) setShowEmail(true);
                                         setLastClickedTooltip('email');
@@ -236,6 +241,8 @@ export default function Profile({ author, social, features, researchInterests }:
                                         : 'text-neutral-600 dark:text-neutral-400 hover:text-accent'
                                         }`}
                                     aria-label={link.name}
+                                    aria-expanded={isEmailPinned}
+                                    aria-controls="email-contact-panel"
                                 >
                                     {isEmailPinned ? (
                                         <EnvelopeSolidIcon className="h-5 w-5" />
@@ -248,6 +255,7 @@ export default function Profile({ author, social, features, researchInterests }:
                                 <AnimatePresence>
                                     {(showEmail || isEmailPinned) && (
                                         <motion.div
+                                            id="email-contact-panel"
                                             initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                             animate={{ opacity: 1, y: -10, scale: 1 }}
                                             exit={{ opacity: 0, y: -20, scale: 0.8 }}
@@ -306,7 +314,7 @@ export default function Profile({ author, social, features, researchInterests }:
             {/* Research Interests */}
             {researchInterests && researchInterests.length > 0 && (
                 <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-4 mb-6">
-                    <h3 className="font-semibold text-primary mb-3">{messages.profile.researchInterests}</h3>
+                    <h2 className="font-semibold text-primary mb-3">{messages.profile.researchInterests}</h2>
                     <div className="space-y-2 text-sm text-neutral-700 dark:text-neutral-500">
                         {researchInterests.map((interest, index) => (
                             <div key={index}>{interest}</div>
@@ -320,6 +328,7 @@ export default function Profile({ author, social, features, researchInterests }:
                 <div className="flex justify-center">
                     <div className="relative">
                         <motion.button
+                            type="button"
                             onClick={handleLike}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}

@@ -226,6 +226,7 @@ export default function Navigation({
                             href={href}
                             data-nav-href={href}
                             prefetch={true}
+                            aria-current={isActive ? 'page' : undefined}
                             onClick={() => enableOnePageMode && setActiveHash(`#${item.target}`)}
                             onMouseEnter={() => setHoveredHref(href)}
                             className={cn(
@@ -301,6 +302,7 @@ export default function Navigation({
                             as={Link}
                             href={href}
                             prefetch={true}
+                            aria-current={isActive ? 'page' : undefined}
                             onClick={() => enableOnePageMode && setActiveHash(item.href === '/' ? '' : `#${item.target}`)}
                             className={cn(
                               'block px-3 py-2 rounded-md text-base font-medium transition-all duration-200',

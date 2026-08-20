@@ -62,6 +62,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const pageConfig = getPageConfig(slug) as BasePageConfig | null;
+  const config = getConfig();
 
   if (!pageConfig) {
     return {};
@@ -70,6 +71,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: pageConfig.title,
     description: pageConfig.description,
+    alternates: {
+      canonical: `/${slug}/`,
+    },
+    openGraph: {
+      type: 'website',
+      url: `/${slug}/`,
+      title: `${pageConfig.title} | ${config.site.title}`,
+      description: pageConfig.description,
+      images: [config.author.avatar],
+    },
+    twitter: {
+      card: 'summary',
+      title: `${pageConfig.title} | ${config.site.title}`,
+      description: pageConfig.description,
+      images: [config.author.avatar],
+    },
   };
 }
 
