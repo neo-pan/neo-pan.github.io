@@ -79,7 +79,7 @@ const en: LocaleMessages = {
   home: {
     about: 'About',
     news: 'News',
-    selectedPublications: 'Selected Publications',
+    selectedPublications: 'Recent Publications',
     viewAll: 'View All',
   },
   publications: {
@@ -129,7 +129,7 @@ const zh: LocaleMessages = {
   home: {
     about: '关于我',
     news: '动态',
-    selectedPublications: '精选论文',
+    selectedPublications: '近期论文',
     viewAll: '查看全部',
   },
   publications: {

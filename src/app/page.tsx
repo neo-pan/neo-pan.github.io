@@ -130,7 +130,6 @@ function loadPageDataForLocale(locale: string | undefined): HomePageLocaleData {
   return {
     author: localeConfig.author,
     social: localeConfig.social,
-    features: localeConfig.features,
     enableOnePageMode,
     researchInterests,
     pagesToShow,
