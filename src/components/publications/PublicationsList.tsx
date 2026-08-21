@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import {
-    BookOpenIcon,
-    ClipboardDocumentIcon,
-    DocumentTextIcon
+  BookOpenIcon,
+  CheckIcon,
+  ClipboardDocumentIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { Publication } from '@/types/publication';
 import { PublicationPageConfig } from '@/types/page';
@@ -15,206 +15,205 @@ import { useMessages } from '@/lib/i18n/useMessages';
 import FormattedBibTeXText from './FormattedBibTeXText';
 
 interface PublicationsListProps {
-    config: PublicationPageConfig;
-    publications: Publication[];
-    embedded?: boolean;
+  config: PublicationPageConfig;
+  publications: Publication[];
+  embedded?: boolean;
 }
 
+const idleActionClasses =
+  'bg-neutral-100 text-neutral-700 hover:bg-accent hover:text-white dark:bg-neutral-800 dark:text-neutral-300';
+
 export default function PublicationsList({ config, publications, embedded = false }: PublicationsListProps) {
-    const messages = useMessages();
-    const [expandedBibtexId, setExpandedBibtexId] = useState<string | null>(null);
-    const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
+  const messages = useMessages();
+  const [expandedBibtexId, setExpandedBibtexId] = useState<string | null>(null);
+  const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
+  const [copiedBibtexId, setCopiedBibtexId] = useState<string | null>(null);
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-        >
-            <div className="mb-8">
-                <h1 className={`${embedded ? "text-2xl" : "text-4xl"} font-serif font-bold text-primary mb-4`}>{config.title}</h1>
-                {config.description && (
-                    <p className={`${embedded ? "text-base" : "text-lg"} text-neutral-600 dark:text-neutral-500 max-w-2xl`}>
-                        {config.description}
-                    </p>
-                )}
-            </div>
+  const copyBibTeX = async (pub: Publication) => {
+    try {
+      await navigator.clipboard.writeText(pub.bibtex || '');
+      setCopiedBibtexId(pub.id);
+      window.setTimeout(() => setCopiedBibtexId((current) => current === pub.id ? null : current), 1800);
+    } catch {
+      setCopiedBibtexId(null);
+    }
+  };
 
-            {/* Publications Grid */}
-            <div className="space-y-6">
-                {publications.length === 0 ? (
-                    <div className="text-center py-12 text-neutral-500">
-                        {messages.publications.noResults}
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className={`${embedded ? 'text-2xl' : 'text-4xl'} mb-4 font-serif font-bold text-primary`}>
+          {config.title}
+        </h1>
+        {config.description && (
+          <p className={`${embedded ? 'text-base' : 'text-lg'} max-w-2xl text-neutral-600 dark:text-neutral-400`}>
+            {config.description}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-6">
+        {publications.length === 0 ? (
+          <div className="py-12 text-center text-neutral-500 dark:text-neutral-400">
+            {messages.publications.noResults}
+          </div>
+        ) : (
+          publications.map((pub) => (
+            <article
+              key={pub.id}
+              className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="flex flex-col gap-6 md:flex-row">
+                {pub.preview && (
+                  <div className="w-full flex-shrink-0 md:w-48">
+                    <div className="relative aspect-video overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800 md:aspect-[4/3]">
+                      <Image
+                        src={`/papers/${pub.preview}`}
+                        alt={pub.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 192px"
+                      />
                     </div>
-                ) : (
-                    publications.map((pub, index) => (
-                        <motion.div
-                            key={pub.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 * index }}
-                            className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-200"
-                        >
-                            <div className="flex flex-col md:flex-row gap-6">
-                                {pub.preview && (
-                                    <div className="w-full md:w-48 flex-shrink-0">
-                                        <div className="aspect-video md:aspect-[4/3] relative rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-                                            <Image
-                                                src={`/papers/${pub.preview}`}
-                                                alt={pub.title}
-                                                fill
-                                                className="object-cover"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="flex-grow">
-                                    <h2 className={`${embedded ? "text-lg" : "text-xl"} font-semibold text-primary mb-2 leading-tight`}>
-                                        <FormattedBibTeXText nodes={pub.titleNodes} fallback={pub.title} />
-                                    </h2>
-                                    <p className={`${embedded ? "text-sm" : "text-base"} text-neutral-600 dark:text-neutral-400 mb-2`}>
-                                        {pub.authors.map((author, idx) => (
-                                            <span key={idx}>
-                                                <span className={`${author.isHighlighted ? 'font-semibold text-accent' : ''} ${author.isCoAuthor ? `underline underline-offset-4 ${author.isHighlighted ? 'decoration-accent' : 'decoration-neutral-400'}` : ''}`}>
-                                                    {author.name}
-                                                </span>
-                                                {author.isCorresponding && (
-                                                    <sup className={`ml-0 ${author.isHighlighted ? 'text-accent' : 'text-neutral-600 dark:text-neutral-400'}`}>†</sup>
-                                                )}
-                                                {idx < pub.authors.length - 1 && ', '}
-                                            </span>
-                                        ))}
-                                    </p>
-                                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-600 mb-3">
-                                        {pub.journal || pub.conference} {pub.year}
-                                    </p>
-
-                                    {pub.description && (
-                                        <p className="text-sm text-neutral-600 dark:text-neutral-500 mb-4 line-clamp-3">
-                                            {pub.description}
-                                        </p>
-                                    )}
-
-                                    <div className="flex flex-wrap gap-2 mt-auto">
-                                        {pub.url && (
-                                            <a
-                                                href={pub.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-accent hover:text-white transition-colors"
-                                            >
-                                                Paper
-                                            </a>
-                                        )}
-                                        {pub.doi && (
-                                            <a
-                                                href={`https://doi.org/${pub.doi}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-accent hover:text-white transition-colors"
-                                            >
-                                                DOI
-                                            </a>
-                                        )}
-                                        {pub.code && (
-                                            <a
-                                                href={pub.code}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-accent hover:text-white transition-colors"
-                                            >
-                                                {messages.publications.code}
-                                            </a>
-                                        )}
-                                        {pub.abstract && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setExpandedAbstractId(expandedAbstractId === pub.id ? null : pub.id)}
-                                                aria-expanded={expandedAbstractId === pub.id}
-                                                aria-controls={`${pub.id}-abstract`}
-                                                className={cn(
-                                                    "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium transition-colors",
-                                                    expandedAbstractId === pub.id
-                                                        ? "bg-accent text-white"
-                                                        : "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-accent hover:text-white"
-                                                )}
-                                            >
-                                                <DocumentTextIcon className="h-3 w-3 mr-1.5" />
-                                                {messages.publications.abstract}
-                                            </button>
-                                        )}
-                                        {pub.bibtex && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setExpandedBibtexId(expandedBibtexId === pub.id ? null : pub.id)}
-                                                aria-expanded={expandedBibtexId === pub.id}
-                                                aria-controls={`${pub.id}-bibtex`}
-                                                className={cn(
-                                                    "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium transition-colors",
-                                                    expandedBibtexId === pub.id
-                                                        ? "bg-accent text-white"
-                                                        : "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-accent hover:text-white"
-                                                )}
-                                            >
-                                                <BookOpenIcon className="h-3 w-3 mr-1.5" />
-                                                {messages.publications.bibtex}
-                                            </button>
-                                        )}
-                                    </div>
-
-                                    <AnimatePresence>
-                                        {expandedAbstractId === pub.id && pub.abstract ? (
-                                            <motion.div
-                                                id={`${pub.id}-abstract`}
-                                                key="abstract"
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden mt-4"
-                                            >
-                                                <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4 border border-neutral-200 dark:border-neutral-700">
-                                                    <p className="text-sm text-neutral-600 dark:text-neutral-500 leading-relaxed">
-                                                        {pub.abstract}
-                                                    </p>
-                                                </div>
-                                            </motion.div>
-                                        ) : null}
-                                        {expandedBibtexId === pub.id && pub.bibtex ? (
-                                            <motion.div
-                                                id={`${pub.id}-bibtex`}
-                                                key="bibtex"
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden mt-4"
-                                            >
-                                                <div className="relative bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4 border border-neutral-200 dark:border-neutral-700">
-                                                    <pre className="text-xs text-neutral-600 dark:text-neutral-500 overflow-x-auto whitespace-pre-wrap font-mono">
-                                                        {pub.bibtex}
-                                                    </pre>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            navigator.clipboard.writeText(pub.bibtex || '');
-                                                            // Optional: Show copied feedback
-                                                        }}
-                                                        className="absolute top-2 right-2 p-1.5 rounded-md bg-white dark:bg-neutral-700 text-neutral-500 hover:text-accent shadow-sm border border-neutral-200 dark:border-neutral-600 transition-colors"
-                                                        title={messages.common.copyToClipboard}
-                                                        aria-label={messages.common.copyToClipboard}
-                                                    >
-                                                        <ClipboardDocumentIcon className="h-4 w-4" />
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        ) : null}
-                                    </AnimatePresence>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))
+                  </div>
                 )}
-            </div>
-        </motion.div>
-    );
+
+                <div className="min-w-0 flex-grow">
+                  <h2 className={`${embedded ? 'text-lg' : 'text-xl'} mb-2 font-semibold leading-tight text-primary`}>
+                    <FormattedBibTeXText nodes={pub.titleNodes} fallback={pub.title} />
+                  </h2>
+
+                  <p className={`${embedded ? 'text-sm' : 'text-base'} mb-1 text-neutral-600 dark:text-neutral-400`}>
+                    {pub.authors.map((author, index) => (
+                      <span key={`${pub.id}-${author.name}`}>
+                        <span className={author.isHighlighted ? 'font-semibold text-accent' : ''}>
+                          {author.name}
+                        </span>
+                        {author.isEqualContribution && <sup aria-label="equal contribution">*</sup>}
+                        {author.isCorresponding && (
+                          <sup className={author.isHighlighted ? 'text-accent' : ''}>†</sup>
+                        )}
+                        {index < pub.authors.length - 1 && ', '}
+                      </span>
+                    ))}
+                  </p>
+
+                  {pub.authors.some((author) => author.isEqualContribution) && (
+                    <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-400">* Equal contribution</p>
+                  )}
+
+                  <p className="mb-3 text-sm font-medium text-neutral-800 dark:text-neutral-300">
+                    {pub.journal || pub.conference} {pub.year}
+                  </p>
+
+                  {pub.description && (
+                    <p className="mb-4 line-clamp-3 text-sm text-neutral-600 dark:text-neutral-400">
+                      {pub.description}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap gap-2">
+                    {pub.url && (
+                      <a
+                        href={pub.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Paper: ${pub.title}`}
+                        className={`inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${idleActionClasses}`}
+                      >
+                        Paper
+                      </a>
+                    )}
+                    {pub.doi && (
+                      <a
+                        href={`https://doi.org/${pub.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`DOI: ${pub.title}`}
+                        className={`inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${idleActionClasses}`}
+                      >
+                        DOI
+                      </a>
+                    )}
+                    {pub.code && (
+                      <a
+                        href={pub.code}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${messages.publications.code}: ${pub.title}`}
+                        className={`inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${idleActionClasses}`}
+                      >
+                        {messages.publications.code}
+                      </a>
+                    )}
+                    {pub.abstract && (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedAbstractId(expandedAbstractId === pub.id ? null : pub.id)}
+                        aria-expanded={expandedAbstractId === pub.id}
+                        aria-controls={`${pub.id}-abstract`}
+                        aria-label={`${messages.publications.abstract}: ${pub.title}`}
+                        className={cn(
+                          'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                          expandedAbstractId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                        )}
+                      >
+                        <DocumentTextIcon className="mr-1.5 h-3 w-3" />
+                        {messages.publications.abstract}
+                      </button>
+                    )}
+                    {pub.bibtex && (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedBibtexId(expandedBibtexId === pub.id ? null : pub.id)}
+                        aria-expanded={expandedBibtexId === pub.id}
+                        aria-controls={`${pub.id}-bibtex`}
+                        aria-label={`${messages.publications.bibtex}: ${pub.title}`}
+                        className={cn(
+                          'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                          expandedBibtexId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                        )}
+                      >
+                        <BookOpenIcon className="mr-1.5 h-3 w-3" />
+                        {messages.publications.bibtex}
+                      </button>
+                    )}
+                  </div>
+
+                  {expandedAbstractId === pub.id && pub.abstract && (
+                    <div id={`${pub.id}-abstract`} className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+                      <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{pub.abstract}</p>
+                    </div>
+                  )}
+
+                  {expandedBibtexId === pub.id && pub.bibtex && (
+                    <div id={`${pub.id}-bibtex`} className="relative mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+                      <pre className="overflow-x-auto whitespace-pre-wrap pr-24 font-mono text-xs text-neutral-600 dark:text-neutral-300">
+                        {pub.bibtex}
+                      </pre>
+                      <button
+                        type="button"
+                        onClick={() => copyBibTeX(pub)}
+                        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-600 shadow-sm transition-colors hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200"
+                        aria-label={`${messages.common.copyToClipboard}: ${pub.title}`}
+                      >
+                        {copiedBibtexId === pub.id ? (
+                          <><CheckIcon className="h-4 w-4" /> Copied</>
+                        ) : (
+                          <><ClipboardDocumentIcon className="h-4 w-4" /> Copy</>
+                        )}
+                      </button>
+                      <span className="sr-only" aria-live="polite">
+                        {copiedBibtexId === pub.id ? `Copied BibTeX for ${pub.title}` : ''}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </div>
+  );
 }

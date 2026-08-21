@@ -1,11 +1,14 @@
 [[news]]
 date = "2026-07"
 content = "AOT* was published in Findings of ACL 2026."
+url = "https://aclanthology.org/2026.findings-acl.1734/"
 
 [[news]]
 date = "2026-06"
 content = "Towards Principled Task Grouping for Multi-Task Learning was accepted by TMLR."
+url = "https://openreview.net/forum?id=3DeSIpzuro"
 
 [[news]]
 date = "2026-01"
 content = "Beyond the Heatmap was accepted to ICLR 2026."
+url = "https://openreview.net/forum?id=H6PLJnnK6e"

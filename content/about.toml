@@ -24,6 +24,6 @@ source = "news.toml"
 [[sections]]
 id = "featured_publications"
 type = "publications"
-title = "Selected Publications"
+title = "Recent Publications"
 filter = "selected"
 limit = 3

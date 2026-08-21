@@ -3,8 +3,117 @@ import { getConfig } from './config';
 import { getRuntimeI18nConfig } from './i18n/config';
 import { parseBibTeXInline } from './bibtexInline';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const bibtexParse = require('bibtex-parse-js');
+interface BibTeXEntry {
+  entryType: string;
+  citationKey: string;
+  entryTags: Record<string, string>;
+}
+
+function parseBalancedValue(input: string, start: number, open: string, close: string) {
+  let depth = 1;
+  let index = start + 1;
+
+  while (index < input.length) {
+    if (input[index] === '\\') {
+      index += 2;
+      continue;
+    }
+    if (input[index] === open) depth += 1;
+    if (input[index] === close) {
+      depth -= 1;
+      if (depth === 0) {
+        return { value: input.slice(start + 1, index), nextIndex: index + 1 };
+      }
+    }
+    index += 1;
+  }
+
+  throw new Error('Unterminated BibTeX value');
+}
+
+function parseQuotedValue(input: string, start: number) {
+  let index = start + 1;
+  while (index < input.length) {
+    if (input[index] === '\\') {
+      index += 2;
+      continue;
+    }
+    if (input[index] === '"') {
+      return { value: input.slice(start + 1, index), nextIndex: index + 1 };
+    }
+    index += 1;
+  }
+  throw new Error('Unterminated quoted BibTeX value');
+}
+
+function parseBibTeXEntries(input: string): BibTeXEntry[] {
+  const entries: BibTeXEntry[] = [];
+  let cursor = 0;
+
+  while (cursor < input.length) {
+    const entryStart = input.indexOf('@', cursor);
+    if (entryStart === -1) break;
+
+    let index = entryStart + 1;
+    while (/\s/.test(input[index] || '')) index += 1;
+    const typeStart = index;
+    while (/[A-Za-z]/.test(input[index] || '')) index += 1;
+    const entryType = input.slice(typeStart, index).toLowerCase();
+
+    while (/\s/.test(input[index] || '')) index += 1;
+    const open = input[index];
+    const close = open === '{' ? '}' : open === '(' ? ')' : '';
+    if (!close) {
+      cursor = index + 1;
+      continue;
+    }
+    index += 1;
+
+    while (/\s/.test(input[index] || '')) index += 1;
+    const keyStart = index;
+    while (index < input.length && input[index] !== ',' && input[index] !== close) index += 1;
+    const citationKey = input.slice(keyStart, index).trim();
+    if (input[index] === ',') index += 1;
+
+    const entryTags: Record<string, string> = {};
+    while (index < input.length) {
+      while (/\s|,/.test(input[index] || '')) index += 1;
+      if (input[index] === close) {
+        index += 1;
+        break;
+      }
+
+      const fieldStart = index;
+      while (/[A-Za-z0-9_:-]/.test(input[index] || '')) index += 1;
+      const field = input.slice(fieldStart, index).toLowerCase();
+      while (/\s/.test(input[index] || '')) index += 1;
+      if (!field || input[index] !== '=') {
+        while (index < input.length && input[index] !== ',' && input[index] !== close) index += 1;
+        continue;
+      }
+
+      index += 1;
+      while (/\s/.test(input[index] || '')) index += 1;
+
+      let parsed: { value: string; nextIndex: number };
+      if (input[index] === '{') parsed = parseBalancedValue(input, index, '{', '}');
+      else if (input[index] === '"') parsed = parseQuotedValue(input, index);
+      else {
+        const valueStart = index;
+        while (index < input.length && input[index] !== ',' && input[index] !== close) index += 1;
+        parsed = { value: input.slice(valueStart, index), nextIndex: index };
+      }
+
+      entryTags[field] = parsed.value.trim();
+      index = parsed.nextIndex;
+    }
+
+    if (entryType && citationKey) entries.push({ entryType, citationKey, entryTags });
+    cursor = index;
+  }
+
+  return entries;
+}
 
 // Map BibTeX entry types to our publication types
 const typeMapping: Record<string, PublicationType> = {
@@ -38,7 +147,7 @@ const monthMapping: Record<string, number> = {
 
 export function parseBibTeX(bibtexContent: string, locale?: string): Publication[] {
   const highlightNames = getHighlightNames(locale);
-  const entries = bibtexParse.toJSON(bibtexContent);
+  const entries = parseBibTeXEntries(bibtexContent);
 
   return entries.map((entry: { entryType: string; citationKey: string; entryTags: Record<string, string> }, index: number) => {
     const tags = entry.entryTags;
@@ -172,7 +281,7 @@ function buildNameVariants(name: string): Set<string> {
   return variants;
 }
 
-function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ name: string; isHighlighted?: boolean; isCorresponding?: boolean; isCoAuthor?: boolean }> {
+function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ name: string; isHighlighted?: boolean; isCorresponding?: boolean; isEqualContribution?: boolean }> {
   if (!authorsStr) return [];
 
   const highlightTextCandidates = new Set<string>();
@@ -199,8 +308,8 @@ function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ nam
       // Check for corresponding author marker
       const isCorresponding = name.includes('*');
 
-      // Check for co-author marker (#)
-      const isCoAuthor = name.includes('#');
+      // A # marker denotes equal contribution and is removed from rendered/copyable BibTeX.
+      const isEqualContribution = name.includes('#');
 
       // Remove special markers from name
       name = name.replace(/[*#]/g, '');
@@ -224,7 +333,7 @@ function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ nam
         name,
         isHighlighted,
         isCorresponding,
-        isCoAuthor,
+        isEqualContribution,
       };
     })
     .filter(author => author.name);

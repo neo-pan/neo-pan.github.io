@@ -6,7 +6,7 @@ export interface Author {
   orcid?: string;
   isHighlighted?: boolean;
   isCorresponding?: boolean;
-  isCoAuthor?: boolean;
+  isEqualContribution?: boolean;
 }
 
 export type BibTeXInlineNode =

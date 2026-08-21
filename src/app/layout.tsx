@@ -3,7 +3,6 @@ import './globals.css';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
-import { MotionProvider } from '@/components/ui/MotionProvider';
 import { LocaleProvider } from '@/components/ui/LocaleProvider';
 import { getConfig } from '@/lib/config';
 import { getRuntimeI18nConfig } from '@/lib/i18n/config';
@@ -45,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: config.author.avatar,
           width: 512,
           height: 512,
-          alt: `Research mark for ${config.author.name}`,
+          alt: `Illustrated portrait of ${config.author.name}`,
         },
       ],
     },
@@ -217,27 +216,25 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
-          <MotionProvider>
-            <LocaleProvider config={runtimeI18n}>
-              <Navigation
-                items={config.navigation}
-                siteTitle={config.site.title}
-                enableOnePageMode={config.features.enable_one_page_mode}
-                i18n={runtimeI18n}
-                itemsByLocale={navigationByLocale}
-                siteTitleByLocale={siteTitleByLocale}
-              />
-              <main id="main-content" tabIndex={-1} className="min-h-screen pt-16 lg:pt-20 outline-none">
-                {children}
-              </main>
-              <Footer
-                siteTitle={config.site.title}
-                lastUpdated={config.site.last_updated}
-                lastUpdatedByLocale={lastUpdatedByLocale}
-                defaultLocale={runtimeI18n.defaultLocale}
-              />
-            </LocaleProvider>
-          </MotionProvider>
+          <LocaleProvider config={runtimeI18n}>
+            <Navigation
+              items={config.navigation}
+              siteTitle={config.site.title}
+              enableOnePageMode={config.features.enable_one_page_mode}
+              i18n={runtimeI18n}
+              itemsByLocale={navigationByLocale}
+              siteTitleByLocale={siteTitleByLocale}
+            />
+            <main id="main-content" tabIndex={-1} className="min-h-screen pt-16 lg:pt-20 outline-none">
+              {children}
+            </main>
+            <Footer
+              siteTitle={config.site.title}
+              lastUpdated={config.site.last_updated}
+              lastUpdatedByLocale={lastUpdatedByLocale}
+              defaultLocale={runtimeI18n.defaultLocale}
+            />
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>
