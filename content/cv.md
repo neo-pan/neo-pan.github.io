@@ -43,7 +43,8 @@ Mentor: [Lei Song](https://scholar.google.com/citations?user=pXDSOocAAAAJ)
 
 **LLM-Assisted Kernel Search on Ascend NPU**, December 2025 – Present
 
-- Explore feedback-driven generation and optimization of kernels and algorithms in the Ascend ecosystem.
+- Develop [Kernel Agent](https://github.com/Aux-724/kernel-agent), an LLM-assisted search framework for TileLang-Ascend kernels.
+- Use correctness checks, execution time, and profiling feedback to guide algorithm exploration and kernel optimization.
 
 ## Technical Background
 

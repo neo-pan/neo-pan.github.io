@@ -67,7 +67,7 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
 
   return (
     <div className="lg:sticky lg:top-24">
-      <div className="mx-auto mb-6 h-56 w-56 overflow-hidden rounded-2xl border border-neutral-200 shadow-sm dark:border-neutral-700">
+      <div className="mx-auto mb-3 h-32 w-32 overflow-hidden rounded-2xl border border-neutral-200 shadow-sm lg:mb-6 lg:h-56 lg:w-56 dark:border-neutral-700">
         <Image
           src={author.avatar}
           alt={author.name}
@@ -78,13 +78,13 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
         />
       </div>
 
-      <div className="mb-6 text-center">
+      <div className="mb-3 text-center lg:mb-6">
         <h1 className="mb-2 font-serif text-3xl font-bold text-primary">{author.name}</h1>
-        <p className="mb-1 text-lg font-medium text-accent">{author.title}</p>
-        <p className="mb-2 text-neutral-600 dark:text-neutral-300">{author.institution}</p>
+        <p className="mb-1 text-base font-medium text-accent lg:text-lg">{author.title}</p>
+        <p className="mb-2 text-sm text-neutral-600 lg:text-base dark:text-neutral-300">{author.institution}</p>
       </div>
 
-      <div className="relative mb-6 flex flex-wrap justify-center gap-3 px-2 sm:gap-4">
+      <div className="relative mb-3 flex flex-wrap justify-center gap-3 px-2 sm:gap-4 lg:mb-6">
         {socialLinks.map((link) => {
           const Icon = link.icon;
           return (
@@ -104,13 +104,13 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
       </div>
 
       {researchInterests && researchInterests.length > 0 && (
-        <div className="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
-          <h2 className="mb-3 font-semibold text-primary">Research Interests</h2>
-          <div className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+        <div className="border-t border-neutral-200 pt-3 lg:mb-6 lg:rounded-lg lg:border lg:bg-neutral-50 lg:p-4 dark:border-neutral-700 dark:lg:bg-neutral-800">
+          <h2 className="mb-2 text-center text-sm font-semibold text-primary lg:mb-3 lg:text-left lg:text-base">Research Interests</h2>
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-700 lg:block lg:space-y-2 dark:text-neutral-300">
             {researchInterests.map((interest) => (
-              <div key={interest}>{interest}</div>
+              <li key={interest}>{interest}</li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </div>

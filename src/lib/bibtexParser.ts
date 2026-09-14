@@ -385,7 +385,10 @@ function reconstructBibTeX(entry: { entryType: string; citationKey: string; entr
         cleanValue = value.replace(/[#*]/g, '');
       }
 
-      bibtex += `  ${key} = {${cleanValue}},\n`;
+      // Standard month abbreviations are BibTeX macros, not literal strings.
+      const isMonthMacro = key === 'month' && /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)$/i.test(cleanValue);
+      const formattedValue = isMonthMacro ? cleanValue.toLowerCase() : `{${cleanValue}}`;
+      bibtex += `  ${key} = ${formattedValue},\n`;
     }
   });
 
