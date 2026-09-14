@@ -253,3 +253,60 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  :root,
+  .dark {
+    --background: #fff;
+    --foreground: #172033;
+    --primary: #172033;
+    --accent: #285374;
+  }
+
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  main,
+  main > div {
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-document {
+    max-width: none;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  .print-document * {
+    color: #172033 !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .print-document h1 {
+    font-size: 20pt;
+  }
+
+  .print-document h2 {
+    margin-top: 14pt;
+    margin-bottom: 8pt;
+    font-size: 14pt;
+    break-after: avoid;
+  }
+
+  .print-document p,
+  .print-document li {
+    margin-bottom: 6pt;
+    break-inside: avoid;
+  }
+
+  .print-document p:has(> strong:only-child) {
+    break-after: avoid;
+  }
+}

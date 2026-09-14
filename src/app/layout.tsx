@@ -211,7 +211,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <a
           href="#main-content"
-          className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-md bg-primary px-4 py-2 text-sm font-medium text-background shadow-lg transition-transform focus:translate-y-0"
+          className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-md bg-primary px-4 py-2 text-sm font-medium text-background shadow-lg transition-transform focus:translate-y-0 print:hidden"
         >
           Skip to main content
         </a>

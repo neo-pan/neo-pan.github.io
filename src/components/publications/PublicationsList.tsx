@@ -21,21 +21,24 @@ interface PublicationsListProps {
 }
 
 const idleActionClasses =
-  'bg-neutral-100 text-neutral-700 hover:bg-accent hover:text-white dark:bg-neutral-800 dark:text-neutral-300';
+  'bg-neutral-100 text-neutral-700 hover:bg-accent hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-accent dark:hover:text-neutral-900';
 
 export default function PublicationsList({ config, publications, embedded = false }: PublicationsListProps) {
   const messages = useMessages();
   const [expandedBibtexId, setExpandedBibtexId] = useState<string | null>(null);
   const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
   const [copiedBibtexId, setCopiedBibtexId] = useState<string | null>(null);
+  const [copyErrorId, setCopyErrorId] = useState<string | null>(null);
 
   const copyBibTeX = async (pub: Publication) => {
+    setCopyErrorId(null);
     try {
       await navigator.clipboard.writeText(pub.bibtex || '');
       setCopiedBibtexId(pub.id);
       window.setTimeout(() => setCopiedBibtexId((current) => current === pub.id ? null : current), 1800);
     } catch {
       setCopiedBibtexId(null);
+      setCopyErrorId(pub.id);
     }
   };
 
@@ -155,7 +158,7 @@ export default function PublicationsList({ config, publications, embedded = fals
                         aria-label={`${messages.publications.abstract}: ${pub.title}`}
                         className={cn(
                           'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-                          expandedAbstractId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                          expandedAbstractId === pub.id ? 'bg-accent text-white dark:text-neutral-900' : idleActionClasses
                         )}
                       >
                         <DocumentTextIcon className="mr-1.5 h-3 w-3" />
@@ -171,7 +174,7 @@ export default function PublicationsList({ config, publications, embedded = fals
                         aria-label={`${messages.publications.bibtex}: ${pub.title}`}
                         className={cn(
                           'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-                          expandedBibtexId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                          expandedBibtexId === pub.id ? 'bg-accent text-white dark:text-neutral-900' : idleActionClasses
                         )}
                       >
                         <BookOpenIcon className="mr-1.5 h-3 w-3" />
@@ -187,14 +190,14 @@ export default function PublicationsList({ config, publications, embedded = fals
                   )}
 
                   {expandedBibtexId === pub.id && pub.bibtex && (
-                    <div id={`${pub.id}-bibtex`} className="relative mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
-                      <pre className="overflow-x-auto whitespace-pre-wrap pr-24 font-mono text-xs text-neutral-600 dark:text-neutral-300">
+                    <div id={`${pub.id}-bibtex`} className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+                      <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs text-neutral-600 dark:text-neutral-300">
                         {pub.bibtex}
                       </pre>
                       <button
                         type="button"
                         onClick={() => copyBibTeX(pub)}
-                        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-600 shadow-sm transition-colors hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200"
+                        className="mt-3 inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-600 shadow-sm transition-colors hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200"
                         aria-label={`${messages.common.copyToClipboard}: ${pub.title}`}
                       >
                         {copiedBibtexId === pub.id ? (
@@ -203,6 +206,11 @@ export default function PublicationsList({ config, publications, embedded = fals
                           <><ClipboardDocumentIcon className="h-4 w-4" /> Copy</>
                         )}
                       </button>
+                      {copyErrorId === pub.id && (
+                        <p role="status" className="mt-2 text-xs text-neutral-700 dark:text-neutral-300">
+                          Copy unavailable. Please select and copy the citation above.
+                        </p>
+                      )}
                       <span className="sr-only" aria-live="polite">
                         {copiedBibtexId === pub.id ? `Copied BibTeX for ${pub.title}` : ''}
                       </span>
