@@ -67,7 +67,7 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
 
   return (
     <div className="lg:sticky lg:top-24">
-      <div className="mx-auto mb-6 h-56 w-56 overflow-hidden rounded-2xl border border-neutral-200 shadow-sm dark:border-neutral-700">
+      <div className="mx-auto mb-4 h-32 w-32 overflow-hidden rounded-2xl border border-neutral-200 shadow-sm dark:border-neutral-700 sm:h-40 sm:w-40 lg:mb-6 lg:h-56 lg:w-56">
         <Image
           src={author.avatar}
           alt={author.name}
@@ -78,13 +78,13 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
         />
       </div>
 
-      <div className="mb-6 text-center">
-        <h1 className="mb-2 font-serif text-3xl font-bold text-primary">{author.name}</h1>
-        <p className="mb-1 text-lg font-medium text-accent">{author.title}</p>
-        <p className="mb-2 text-neutral-600 dark:text-neutral-300">{author.institution}</p>
+      <div className="mb-3 text-center lg:mb-6">
+        <h1 className="mb-1 font-serif text-2xl font-bold text-primary lg:mb-2 lg:text-3xl">{author.name}</h1>
+        <p className="mb-1 text-base font-medium text-accent lg:text-lg">{author.title}</p>
+        <p className="text-sm text-neutral-600 dark:text-neutral-300 lg:mb-2 lg:text-base">{author.institution}</p>
       </div>
 
-      <div className="relative mb-6 flex flex-wrap justify-center gap-3 px-2 sm:gap-4">
+      <div className="relative mb-3 flex flex-wrap justify-center gap-3 px-2 sm:gap-4 lg:mb-6">
         {socialLinks.map((link) => {
           const Icon = link.icon;
           return (
@@ -104,13 +104,13 @@ export default function Profile({ author, social, researchInterests }: ProfilePr
       </div>
 
       {researchInterests && researchInterests.length > 0 && (
-        <div className="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
-          <h2 className="mb-3 font-semibold text-primary">Research Interests</h2>
-          <div className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+        <div className="text-center lg:mb-6 lg:rounded-lg lg:border lg:border-neutral-200 lg:bg-neutral-50 lg:p-4 lg:text-left dark:lg:border-neutral-700 dark:lg:bg-neutral-800">
+          <h2 className="sr-only lg:not-sr-only lg:mb-3 lg:font-semibold lg:text-primary">Research Interests</h2>
+          <ul className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-neutral-700 dark:text-neutral-300 lg:block lg:space-y-2">
             {researchInterests.map((interest) => (
-              <div key={interest}>{interest}</div>
+              <li key={interest}>{interest}</li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </div>

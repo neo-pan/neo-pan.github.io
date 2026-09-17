@@ -12,6 +12,7 @@ export interface PublicationPageConfig extends BasePageConfig {
 export interface TextPageConfig extends BasePageConfig {
     type: 'text';
     source: string;
+    print_title?: string;
 }
 
 export interface CardItem {

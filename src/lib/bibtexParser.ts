@@ -145,6 +145,11 @@ const monthMapping: Record<string, number> = {
   dec: 12, december: 12,
 };
 
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
 export function parseBibTeX(bibtexContent: string, locale?: string): Publication[] {
   const highlightNames = getHighlightNames(locale);
   const entries = parseBibTeXEntries(bibtexContent);
@@ -383,6 +388,11 @@ function reconstructBibTeX(entry: { entryType: string; citationKey: string; entr
       // Clean author field by removing # and * symbols
       if (key.toLowerCase() === 'author') {
         cleanValue = value.replace(/[#*]/g, '');
+      }
+
+      // Expand known month names/macros before quoting them as literal text.
+      if (key === 'month' && monthMapping[value.toLowerCase()]) {
+        cleanValue = monthNames[monthMapping[value.toLowerCase()] - 1];
       }
 
       bibtex += `  ${key} = {${cleanValue}},\n`;

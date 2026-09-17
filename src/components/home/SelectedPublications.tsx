@@ -17,7 +17,7 @@ export default function SelectedPublications({ publications, title, enableOnePag
 
     return (
         <section>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-2xl font-serif font-bold text-primary">{resolvedTitle}</h2>
                 <Link
                     href={enableOnePageMode ? "/#publications" : "/publications"}
@@ -63,6 +63,22 @@ export default function SelectedPublications({ publications, title, enableOnePag
                         <p className="text-sm text-neutral-600 dark:text-neutral-300">
                             {pub.journal || pub.conference} · {pub.year}
                         </p>
+                        {pub.description && (
+                            <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+                                {pub.description}
+                            </p>
+                        )}
+                        {pub.code && (
+                            <a
+                                href={pub.code}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${messages.publications.code}: ${pub.title}`}
+                                className="mt-2 inline-block rounded py-1 text-sm font-medium text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                            >
+                                {messages.publications.code} →
+                            </a>
+                        )}
                     </article>
                 ))}
             </div>
