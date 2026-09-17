@@ -109,7 +109,7 @@ export default function PublicationsList({ config, publications, embedded = fals
                   </p>
 
                   {pub.description && (
-                    <p className="mb-4 line-clamp-3 text-sm text-neutral-600 dark:text-neutral-400">
+                    <p className="mb-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                       {pub.description}
                     </p>
                   )}
