@@ -21,7 +21,9 @@ interface PublicationsListProps {
 }
 
 const idleActionClasses =
-  'bg-neutral-100 text-neutral-700 hover:bg-accent hover:text-white dark:bg-neutral-800 dark:text-neutral-300';
+  'bg-neutral-100 text-neutral-700 hover:bg-accent hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-accent dark:hover:text-neutral-900';
+
+const activeActionClasses = 'bg-accent text-white dark:text-neutral-900';
 
 export default function PublicationsList({ config, publications, embedded = false }: PublicationsListProps) {
   const messages = useMessages();
@@ -155,7 +157,7 @@ export default function PublicationsList({ config, publications, embedded = fals
                         aria-label={`${messages.publications.abstract}: ${pub.title}`}
                         className={cn(
                           'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-                          expandedAbstractId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                          expandedAbstractId === pub.id ? activeActionClasses : idleActionClasses
                         )}
                       >
                         <DocumentTextIcon className="mr-1.5 h-3 w-3" />
@@ -171,7 +173,7 @@ export default function PublicationsList({ config, publications, embedded = fals
                         aria-label={`${messages.publications.bibtex}: ${pub.title}`}
                         className={cn(
                           'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-                          expandedBibtexId === pub.id ? 'bg-accent text-white' : idleActionClasses
+                          expandedBibtexId === pub.id ? activeActionClasses : idleActionClasses
                         )}
                       >
                         <BookOpenIcon className="mr-1.5 h-3 w-3" />

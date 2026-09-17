@@ -239,6 +239,49 @@ body {
   border-color: rgba(148, 163, 184, 0.24);
 }
 
+@media print {
+  body:has(.printable-page) {
+    background: white;
+    color: #172033;
+    font-size: 10pt;
+  }
+
+  body:has(.printable-page) nav,
+  body:has(.printable-page) footer,
+  body:has(.printable-page) > a {
+    display: none;
+  }
+
+  body:has(.printable-page) main,
+  body:has(.printable-page) main > div {
+    min-height: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .printable-page,
+  .printable-page * {
+    color: #172033;
+    border-color: #cbd5e1;
+  }
+
+  .printable-page h1 {
+    font-size: 20pt;
+  }
+
+  .printable-page h2 {
+    font-size: 13pt;
+    margin-top: 16pt;
+    margin-bottom: 8pt;
+    break-after: avoid;
+  }
+
+  .printable-page p,
+  .printable-page li {
+    break-inside: avoid;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;
