@@ -41,12 +41,10 @@ Mentor: [Lei Song](https://scholar.google.com/citations?user=pXDSOocAAAAJ)
 
 ## Current Project
 
-**LLM-Assisted Kernel Search on Ascend NPU**, December 2025 – Present
+**Kernel Agent: LLM-Assisted Kernel Search on Ascend NPU**, December 2025 – Present
 
-- Develop LLM-assisted search for TileLang-Ascend kernels, combining algorithm exploration with iterative kernel optimization.
-- Use correctness checks, on-device timing, and profiling feedback to evaluate candidates and guide subsequent search.
-
-Project: [Kernel Agent](https://github.com/Aux-724/kernel-agent)
+- Combine LLM-driven algorithm exploration with iterative TileLang-Ascend kernel optimization, reusing validated candidates as starting points for further search.
+- Close the search loop with correctness checks, on-device timing, and profiling feedback; keep candidate generation separate from hardware execution for consistent evaluation.
 
 ## Technical Background
 

@@ -16,12 +16,6 @@ source = "bio.md"
 title = "About"
 
 [[sections]]
-id = "news"
-type = "list"
-title = "News"
-source = "news.toml"
-
-[[sections]]
 id = "featured_publications"
 type = "publications"
 title = "Recent Publications"
